@@ -1,0 +1,433 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jmeterTestPlan version="1.2" properties="5.0" jmeter="5.6.3">
+<hashTree>
+<TestPlan guiclass="TestPlanGui" testclass="TestPlan" testname="Monolith - load test (ramp to failure)">
+<stringProp name="TestPlan.comments">Linear ramp: users are added continuously from 0 to USERS over RAMP_UP seconds (default 0 -&gt; 1500 users over the whole 5 minutes). Shows how latency and errors grow with load and the moment the server starts refusing requests (the breaking point).</stringProp>
+<boolProp name="TestPlan.functional_mode">false</boolProp>
+<boolProp name="TestPlan.tearDown_on_shutdown">true</boolProp>
+<boolProp name="TestPlan.serialize_threadgroups">false</boolProp>
+<elementProp name="TestPlan.user_defined_variables" elementType="Arguments" guiclass="ArgumentsPanel" testclass="Arguments" testname="User Defined Variables"><collectionProp name="Arguments.arguments"/></elementProp>
+</TestPlan>
+<hashTree><Arguments guiclass="ArgumentsPanel" testclass="Arguments" testname="Server and test settings (override with -J on the command line)">
+<stringProp name="TestPlan.comments">HOST is empty on purpose: pass -Jhost=&lt;server address&gt; on the command line, or type it here in the GUI.</stringProp>
+<collectionProp name="Arguments.arguments"><elementProp name="HOST" elementType="Argument"><stringProp name="Argument.name">HOST</stringProp><stringProp name="Argument.value">${__P(host,)}</stringProp><stringProp name="Argument.metadata">=</stringProp></elementProp><elementProp name="PORT" elementType="Argument"><stringProp name="Argument.name">PORT</stringProp><stringProp name="Argument.value">${__P(port,8080)}</stringProp><stringProp name="Argument.metadata">=</stringProp></elementProp><elementProp name="PROTOCOL" elementType="Argument"><stringProp name="Argument.name">PROTOCOL</stringProp><stringProp name="Argument.value">${__P(protocol,http)}</stringProp><stringProp name="Argument.metadata">=</stringProp></elementProp><elementProp name="SEED_USERS" elementType="Argument"><stringProp name="Argument.name">SEED_USERS</stringProp><stringProp name="Argument.value">${__P(seed_users,1500)}</stringProp><stringProp name="Argument.metadata">=</stringProp></elementProp><elementProp name="SEED_PRODUCTS" elementType="Argument"><stringProp name="Argument.name">SEED_PRODUCTS</stringProp><stringProp name="Argument.value">${__P(seed_products,50)}</stringProp><stringProp name="Argument.metadata">=</stringProp></elementProp><elementProp name="SEED_THREADS" elementType="Argument"><stringProp name="Argument.name">SEED_THREADS</stringProp><stringProp name="Argument.value">${__P(seed_threads,20)}</stringProp><stringProp name="Argument.metadata">=</stringProp></elementProp><elementProp name="THINK_MS" elementType="Argument"><stringProp name="Argument.name">THINK_MS</stringProp><stringProp name="Argument.value">${__P(think_time,100)}</stringProp><stringProp name="Argument.metadata">=</stringProp></elementProp><elementProp name="RUN_ID" elementType="Argument"><stringProp name="Argument.name">RUN_ID</stringProp><stringProp name="Argument.value">${__P(run_id,monolith-${__time(yyyyMMdd-HHmmss,)})}</stringProp><stringProp name="Argument.metadata">=</stringProp></elementProp><elementProp name="BROWSE_PCT" elementType="Argument"><stringProp name="Argument.name">BROWSE_PCT</stringProp><stringProp name="Argument.value">${__P(browse_pct,80)}</stringProp><stringProp name="Argument.metadata">=</stringProp></elementProp><elementProp name="DETAIL_PCT" elementType="Argument"><stringProp name="Argument.name">DETAIL_PCT</stringProp><stringProp name="Argument.value">${__P(detail_pct,15)}</stringProp><stringProp name="Argument.metadata">=</stringProp></elementProp><elementProp name="USERS" elementType="Argument"><stringProp name="Argument.name">USERS</stringProp><stringProp name="Argument.value">${__P(users,1500)}</stringProp><stringProp name="Argument.metadata">=</stringProp></elementProp><elementProp name="RAMP_UP" elementType="Argument"><stringProp name="Argument.name">RAMP_UP</stringProp><stringProp name="Argument.value">${__P(ramp,300)}</stringProp><stringProp name="Argument.metadata">=</stringProp></elementProp><elementProp name="DURATION" elementType="Argument"><stringProp name="Argument.name">DURATION</stringProp><stringProp name="Argument.value">${__P(duration,300)}</stringProp><stringProp name="Argument.metadata">=</stringProp></elementProp></collectionProp>
+</Arguments>
+<hashTree></hashTree>
+<ConfigTestElement guiclass="HttpDefaultsGui" testclass="ConfigTestElement" testname="HTTP Request Defaults (server)">
+<elementProp name="HTTPsampler.Arguments" elementType="Arguments" guiclass="HTTPArgumentsPanel" testclass="Arguments" testname="User Defined Variables"><collectionProp name="Arguments.arguments"/></elementProp>
+<stringProp name="HTTPSampler.domain">${HOST}</stringProp>
+<stringProp name="HTTPSampler.port">${PORT}</stringProp>
+<stringProp name="HTTPSampler.protocol">${PROTOCOL}</stringProp>
+<stringProp name="HTTPSampler.implementation">HttpClient4</stringProp>
+<stringProp name="HTTPSampler.connect_timeout">${__P(connect_timeout,5000)}</stringProp>
+<stringProp name="HTTPSampler.response_timeout">${__P(response_timeout,10000)}</stringProp>
+</ConfigTestElement>
+<hashTree></hashTree>
+<SetupThreadGroup guiclass="SetupThreadGroupGui" testclass="SetupThreadGroup" testname="setUp - check server, seed users and products (SEED_THREADS in parallel)"><stringProp name="ThreadGroup.on_sample_error">stoptest</stringProp><elementProp name="ThreadGroup.main_controller" elementType="LoopController" guiclass="LoopControlPanel" testclass="LoopController" testname="Loop Controller"><boolProp name="LoopController.continue_forever">false</boolProp><stringProp name="LoopController.loops">1</stringProp></elementProp><stringProp name="ThreadGroup.num_threads">${SEED_THREADS}</stringProp><stringProp name="ThreadGroup.ramp_time">1</stringProp><boolProp name="ThreadGroup.scheduler">false</boolProp><stringProp name="ThreadGroup.duration"></stringProp><stringProp name="ThreadGroup.delay"></stringProp><boolProp name="ThreadGroup.same_user_on_next_iteration">true</boolProp></SetupThreadGroup>
+<hashTree><HeaderManager guiclass="HeaderPanel" testclass="HeaderManager" testname="JSON headers"><collectionProp name="HeaderManager.headers"><elementProp name="" elementType="Header"><stringProp name="Header.name">Content-Type</stringProp><stringProp name="Header.value">application/json</stringProp></elementProp></collectionProp></HeaderManager>
+<hashTree></hashTree>
+<JSR223Sampler guiclass="TestBeanGUI" testclass="JSR223Sampler" testname="setup check server">
+<stringProp name="scriptLanguage">groovy</stringProp>
+<stringProp name="parameters"></stringProp>
+<stringProp name="filename"></stringProp>
+<stringProp name="cacheKey">true</stringProp>
+<stringProp name="script">// Fails fast (and stops the test) when no server was given.
+def h = vars.get('HOST')
+if (h == null || h.trim().isEmpty()) {
+    SampleResult.setSuccessful(false)
+    SampleResult.setResponseCode('NO_SERVER')
+    SampleResult.setResponseMessage('No server set: run with -Jhost=&lt;server address&gt; (and -Jport / -Jprotocol if needed), or fill HOST in the "Server" element')
+} else {
+    SampleResult.setResponseMessage("run_id: ${vars.get('RUN_ID')}  target: ${vars.get('PROTOCOL')}://${h}:${vars.get('PORT')}")
+    log.info("[run] run_id=${vars.get('RUN_ID')} target=${vars.get('PROTOCOL')}://${h}:${vars.get('PORT')}")
+}
+</stringProp>
+</JSR223Sampler>
+<hashTree></hashTree>
+<TestAction guiclass="TestActionGui" testclass="TestAction" testname="Split seeding between setUp threads">
+<intProp name="ActionProcessor.action">1</intProp>
+<intProp name="ActionProcessor.target">0</intProp>
+<stringProp name="ActionProcessor.duration">0</stringProp>
+</TestAction>
+<hashTree><JSR223PreProcessor guiclass="TestBeanGUI" testclass="JSR223PreProcessor" testname="Split seeding between setUp threads">
+<stringProp name="scriptLanguage">groovy</stringProp>
+<stringProp name="parameters"></stringProp>
+<stringProp name="filename"></stringProp>
+<stringProp name="cacheKey">true</stringProp>
+<stringProp name="script">// Splits the seeding work between the setUp threads, so seeding over a slow link stays short.
+int t = ctx.getThreadNum()
+int n = ctx.getThreadGroup().getNumThreads()
+int u = Integer.parseInt(vars.get('SEED_USERS'))
+int p = Integer.parseInt(vars.get('SEED_PRODUCTS'))
+vars.put('myUsers', ((int) (u / n) + (t &lt; u % n ? 1 : 0)).toString())
+vars.put('myProducts', ((int) (p / n) + (t &lt; p % n ? 1 : 0)).toString())
+</stringProp>
+</JSR223PreProcessor>
+<hashTree></hashTree>
+</hashTree>
+<LoopController guiclass="LoopControlPanel" testclass="LoopController" testname="Create my share of users">
+<boolProp name="LoopController.continue_forever">true</boolProp>
+<stringProp name="LoopController.loops">${myUsers}</stringProp>
+</LoopController>
+<hashTree><HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="setup POST /users">
+<stringProp name="HTTPSampler.domain"></stringProp>
+<stringProp name="HTTPSampler.port"></stringProp>
+<stringProp name="HTTPSampler.path">/api/v1/users</stringProp>
+<stringProp name="HTTPSampler.method">POST</stringProp>
+<boolProp name="HTTPSampler.follow_redirects">true</boolProp>
+<boolProp name="HTTPSampler.use_keepalive">true</boolProp>
+<boolProp name="HTTPSampler.postBodyRaw">true</boolProp><elementProp name="HTTPsampler.Arguments" elementType="Arguments"><collectionProp name="Arguments.arguments"><elementProp name="" elementType="HTTPArgument"><boolProp name="HTTPArgument.always_encode">false</boolProp><stringProp name="Argument.value">{"firstName":"jmeter${__counter(FALSE,)}","lastName":"load","email":"jmeter.${__UUID()}@test.local","phone":"000","address":{"street":"s","city":"c","zipCode":"z","state":"st","country":"tn"}}</stringProp><stringProp name="Argument.metadata">=</stringProp></elementProp></collectionProp></elementProp>
+</HTTPSamplerProxy>
+<hashTree><ResponseAssertion guiclass="AssertionGui" testclass="ResponseAssertion" testname="HTTP 201">
+<collectionProp name="Asserion.test_strings"><stringProp name="0">201</stringProp></collectionProp>
+<stringProp name="Assertion.custom_message">expected HTTP 201</stringProp>
+<stringProp name="Assertion.test_field">Assertion.response_code</stringProp>
+<boolProp name="Assertion.assume_success">false</boolProp>
+<intProp name="Assertion.test_type">8</intProp>
+</ResponseAssertion>
+<hashTree></hashTree>
+</hashTree>
+</hashTree>
+<LoopController guiclass="LoopControlPanel" testclass="LoopController" testname="Create my share of products">
+<boolProp name="LoopController.continue_forever">true</boolProp>
+<stringProp name="LoopController.loops">${myProducts}</stringProp>
+</LoopController>
+<hashTree><HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="setup POST /products">
+<stringProp name="HTTPSampler.domain"></stringProp>
+<stringProp name="HTTPSampler.port"></stringProp>
+<stringProp name="HTTPSampler.path">/api/v1/products</stringProp>
+<stringProp name="HTTPSampler.method">POST</stringProp>
+<boolProp name="HTTPSampler.follow_redirects">true</boolProp>
+<boolProp name="HTTPSampler.use_keepalive">true</boolProp>
+<boolProp name="HTTPSampler.postBodyRaw">true</boolProp><elementProp name="HTTPsampler.Arguments" elementType="Arguments"><collectionProp name="Arguments.arguments"><elementProp name="" elementType="HTTPArgument"><boolProp name="HTTPArgument.always_encode">false</boolProp><stringProp name="Argument.value">{"name":"product ${__UUID()}","description":"jmeter load test product","price":${__Random(10,99)}.99,"stockQuantity":1000000000,"category":"loadtest","imageUrl":"http://img/x.png"}</stringProp><stringProp name="Argument.metadata">=</stringProp></elementProp></collectionProp></elementProp>
+</HTTPSamplerProxy>
+<hashTree><ResponseAssertion guiclass="AssertionGui" testclass="ResponseAssertion" testname="HTTP 201">
+<collectionProp name="Asserion.test_strings"><stringProp name="0">201</stringProp></collectionProp>
+<stringProp name="Assertion.custom_message">expected HTTP 201</stringProp>
+<stringProp name="Assertion.test_field">Assertion.response_code</stringProp>
+<boolProp name="Assertion.assume_success">false</boolProp>
+<intProp name="Assertion.test_type">8</intProp>
+</ResponseAssertion>
+<hashTree></hashTree>
+</hashTree>
+</hashTree>
+<TestAction guiclass="TestActionGui" testclass="TestAction" testname="Barrier: all setUp threads done">
+<intProp name="ActionProcessor.action">1</intProp>
+<intProp name="ActionProcessor.target">0</intProp>
+<stringProp name="ActionProcessor.duration">0</stringProp>
+</TestAction>
+<hashTree><SyncTimer guiclass="TestBeanGUI" testclass="SyncTimer" testname="Wait until every setUp thread has finished seeding"><stringProp name="groupSize">${SEED_THREADS}</stringProp><longProp name="timeoutInMs">300000</longProp></SyncTimer>
+<hashTree></hashTree>
+</hashTree>
+<IfController guiclass="IfControllerPanel" testclass="IfController" testname="Thread 1 only: collect the seeded ids">
+<stringProp name="IfController.condition">${__jexl3(${__threadNum} == 1)}</stringProp>
+<boolProp name="IfController.evaluateAll">false</boolProp>
+<boolProp name="IfController.useExpression">true</boolProp>
+</IfController>
+<hashTree><HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="setup GET /users">
+<stringProp name="HTTPSampler.domain"></stringProp>
+<stringProp name="HTTPSampler.port"></stringProp>
+<stringProp name="HTTPSampler.path">/api/v1/users</stringProp>
+<stringProp name="HTTPSampler.method">GET</stringProp>
+<boolProp name="HTTPSampler.follow_redirects">true</boolProp>
+<boolProp name="HTTPSampler.use_keepalive">true</boolProp>
+<elementProp name="HTTPsampler.Arguments" elementType="Arguments" guiclass="HTTPArgumentsPanel" testclass="Arguments" testname="User Defined Variables"><collectionProp name="Arguments.arguments"/></elementProp>
+</HTTPSamplerProxy>
+<hashTree><ResponseAssertion guiclass="AssertionGui" testclass="ResponseAssertion" testname="HTTP 200">
+<collectionProp name="Asserion.test_strings"><stringProp name="0">200</stringProp></collectionProp>
+<stringProp name="Assertion.custom_message">expected HTTP 200</stringProp>
+<stringProp name="Assertion.test_field">Assertion.response_code</stringProp>
+<boolProp name="Assertion.assume_success">false</boolProp>
+<intProp name="Assertion.test_type">8</intProp>
+</ResponseAssertion>
+<hashTree></hashTree>
+<JSR223PostProcessor guiclass="TestBeanGUI" testclass="JSR223PostProcessor" testname="Collect user ids">
+<stringProp name="scriptLanguage">groovy</stringProp>
+<stringProp name="parameters"></stringProp>
+<stringProp name="filename"></stringProp>
+<stringProp name="cacheKey">true</stringProp>
+<stringProp name="script">import groovy.json.JsonSlurper
+// keep only the rows created by this run (the last N ids returned by the list endpoint)
+def wanted = Integer.parseInt(vars.get('SEED_USERS'))
+def ids = new JsonSlurper().parseText(prev.getResponseDataAsString()).collect { it.id.toString() }
+if (ids.size() &lt; wanted) {
+    prev.setSuccessful(false)
+    prev.setResponseMessage("seeding failed: expected ${wanted} users, found ${ids.size()}")
+    return
+}
+def kept = ids.takeRight(wanted)
+props.put('seed.userIds', kept)
+log.info("[seed] ${kept.size()} users ready: ${kept.first()}..${kept.last()}")
+</stringProp>
+</JSR223PostProcessor>
+<hashTree></hashTree>
+</hashTree>
+<HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="setup GET /products">
+<stringProp name="HTTPSampler.domain"></stringProp>
+<stringProp name="HTTPSampler.port"></stringProp>
+<stringProp name="HTTPSampler.path">/api/v1/products</stringProp>
+<stringProp name="HTTPSampler.method">GET</stringProp>
+<boolProp name="HTTPSampler.follow_redirects">true</boolProp>
+<boolProp name="HTTPSampler.use_keepalive">true</boolProp>
+<elementProp name="HTTPsampler.Arguments" elementType="Arguments" guiclass="HTTPArgumentsPanel" testclass="Arguments" testname="User Defined Variables"><collectionProp name="Arguments.arguments"/></elementProp>
+</HTTPSamplerProxy>
+<hashTree><ResponseAssertion guiclass="AssertionGui" testclass="ResponseAssertion" testname="HTTP 200">
+<collectionProp name="Asserion.test_strings"><stringProp name="0">200</stringProp></collectionProp>
+<stringProp name="Assertion.custom_message">expected HTTP 200</stringProp>
+<stringProp name="Assertion.test_field">Assertion.response_code</stringProp>
+<boolProp name="Assertion.assume_success">false</boolProp>
+<intProp name="Assertion.test_type">8</intProp>
+</ResponseAssertion>
+<hashTree></hashTree>
+<JSR223PostProcessor guiclass="TestBeanGUI" testclass="JSR223PostProcessor" testname="Collect product ids">
+<stringProp name="scriptLanguage">groovy</stringProp>
+<stringProp name="parameters"></stringProp>
+<stringProp name="filename"></stringProp>
+<stringProp name="cacheKey">true</stringProp>
+<stringProp name="script">import groovy.json.JsonSlurper
+// keep only the rows created by this run (the last N ids returned by the list endpoint)
+def wanted = Integer.parseInt(vars.get('SEED_PRODUCTS'))
+def ids = new JsonSlurper().parseText(prev.getResponseDataAsString()).collect { it.id.toString() }
+if (ids.size() &lt; wanted) {
+    prev.setSuccessful(false)
+    prev.setResponseMessage("seeding failed: expected ${wanted} products, found ${ids.size()}")
+    return
+}
+def kept = ids.takeRight(wanted)
+props.put('seed.productIds', kept)
+log.info("[seed] ${kept.size()} products ready: ${kept.first()}..${kept.last()}")
+</stringProp>
+</JSR223PostProcessor>
+<hashTree></hashTree>
+</hashTree>
+</hashTree>
+</hashTree>
+<ThreadGroup guiclass="ThreadGroupGui" testclass="ThreadGroup" testname="Shoppers (linear ramp)">
+<stringProp name="TestPlan.comments"></stringProp>
+<stringProp name="ThreadGroup.on_sample_error">continue</stringProp>
+<elementProp name="ThreadGroup.main_controller" elementType="LoopController" guiclass="LoopControlPanel" testclass="LoopController" testname="Loop Controller">
+<boolProp name="LoopController.continue_forever">false</boolProp>
+<stringProp name="LoopController.loops">-1</stringProp>
+</elementProp>
+<stringProp name="ThreadGroup.num_threads">${USERS}</stringProp>
+<stringProp name="ThreadGroup.ramp_time">${RAMP_UP}</stringProp>
+<boolProp name="ThreadGroup.scheduler">true</boolProp>
+<stringProp name="ThreadGroup.duration">${DURATION}</stringProp>
+<stringProp name="ThreadGroup.delay">0</stringProp>
+<boolProp name="ThreadGroup.same_user_on_next_iteration">true</boolProp>
+</ThreadGroup>
+<hashTree><HeaderManager guiclass="HeaderPanel" testclass="HeaderManager" testname="JSON + X-User-ID headers"><collectionProp name="HeaderManager.headers"><elementProp name="" elementType="Header"><stringProp name="Header.name">Content-Type</stringProp><stringProp name="Header.value">application/json</stringProp></elementProp><elementProp name="" elementType="Header"><stringProp name="Header.name">X-User-ID</stringProp><stringProp name="Header.value">${userId}</stringProp></elementProp></collectionProp></HeaderManager>
+<hashTree></hashTree>
+<TestAction guiclass="TestActionGui" testclass="TestAction" testname="Pick user, products and scenario">
+<intProp name="ActionProcessor.action">1</intProp>
+<intProp name="ActionProcessor.target">0</intProp>
+<stringProp name="ActionProcessor.duration">0</stringProp>
+</TestAction>
+<hashTree><JSR223PreProcessor guiclass="TestBeanGUI" testclass="JSR223PreProcessor" testname="Pick user, products and scenario">
+<stringProp name="scriptLanguage">groovy</stringProp>
+<stringProp name="parameters"></stringProp>
+<stringProp name="filename"></stringProp>
+<stringProp name="cacheKey">true</stringProp>
+<stringProp name="script">// Runs once per iteration, before any request.
+// - gives every thread (across all thread groups) its own seeded user, so carts are not shared
+// - spreads products deterministically over (thread, iteration): reruns send the same requests
+// - picks the scenario of this iteration from the BROWSE_PCT / DETAIL_PCT mix (rest = order)
+// No JDK class (Math, Random...) is referenced: the Groovy engine bundled with JMeter 5.6.3
+// cannot resolve them when JMeter runs on Java 25.
+def users = props.get('seed.userIds')
+def products = props.get('seed.productIds')
+if (vars.get('globalThread') == null) {
+    int g
+    synchronized (props) {
+        def c = props.get('monolith.threadCounter')
+        g = (c == null) ? 0 : (c as int)
+        props.put('monolith.threadCounter', g + 1)
+    }
+    vars.put('globalThread', g.toString())
+}
+long t = Long.parseLong(vars.get('globalThread'))
+long it = vars.getIteration()
+long n = products.size()
+vars.put('userId', users[(int) (t % users.size())])
+vars.put('productId', products[(int) (((t * 7919L + it * 104729L) % n + n) % n)])
+vars.put('productId2', products[(int) (((t * 15485863L + it * 32452843L + 1L) % n + n) % n)])
+int r = (int) ((t * 31L + it * 17L) % 100L) + 1        // 1..100, cycles through every value
+int browse = Integer.parseInt(vars.get('BROWSE_PCT'))
+int detail = Integer.parseInt(vars.get('DETAIL_PCT'))
+vars.put('scenario', r &lt;= browse ? 'browse' : (r &lt;= browse + detail ? 'detail' : 'order'))
+</stringProp>
+</JSR223PreProcessor>
+<hashTree></hashTree>
+</hashTree>
+<IfController guiclass="IfControllerPanel" testclass="IfController" testname="Browse (BROWSE_PCT % of iterations)">
+<stringProp name="IfController.condition">${__jexl3("${scenario}" == "browse")}</stringProp>
+<boolProp name="IfController.evaluateAll">false</boolProp>
+<boolProp name="IfController.useExpression">true</boolProp>
+</IfController>
+<hashTree><HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="GET /products">
+<stringProp name="HTTPSampler.domain"></stringProp>
+<stringProp name="HTTPSampler.port"></stringProp>
+<stringProp name="HTTPSampler.path">/api/v1/products</stringProp>
+<stringProp name="HTTPSampler.method">GET</stringProp>
+<boolProp name="HTTPSampler.follow_redirects">true</boolProp>
+<boolProp name="HTTPSampler.use_keepalive">true</boolProp>
+<elementProp name="HTTPsampler.Arguments" elementType="Arguments" guiclass="HTTPArgumentsPanel" testclass="Arguments" testname="User Defined Variables"><collectionProp name="Arguments.arguments"/></elementProp>
+</HTTPSamplerProxy>
+<hashTree><ResponseAssertion guiclass="AssertionGui" testclass="ResponseAssertion" testname="HTTP 200">
+<collectionProp name="Asserion.test_strings"><stringProp name="0">200</stringProp></collectionProp>
+<stringProp name="Assertion.custom_message">expected HTTP 200</stringProp>
+<stringProp name="Assertion.test_field">Assertion.response_code</stringProp>
+<boolProp name="Assertion.assume_success">false</boolProp>
+<intProp name="Assertion.test_type">8</intProp>
+</ResponseAssertion>
+<hashTree></hashTree>
+</hashTree>
+<HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="GET /products/search">
+<stringProp name="HTTPSampler.domain"></stringProp>
+<stringProp name="HTTPSampler.port"></stringProp>
+<stringProp name="HTTPSampler.path">/api/v1/products/search?keyword=product</stringProp>
+<stringProp name="HTTPSampler.method">GET</stringProp>
+<boolProp name="HTTPSampler.follow_redirects">true</boolProp>
+<boolProp name="HTTPSampler.use_keepalive">true</boolProp>
+<elementProp name="HTTPsampler.Arguments" elementType="Arguments" guiclass="HTTPArgumentsPanel" testclass="Arguments" testname="User Defined Variables"><collectionProp name="Arguments.arguments"/></elementProp>
+</HTTPSamplerProxy>
+<hashTree><ResponseAssertion guiclass="AssertionGui" testclass="ResponseAssertion" testname="HTTP 200">
+<collectionProp name="Asserion.test_strings"><stringProp name="0">200</stringProp></collectionProp>
+<stringProp name="Assertion.custom_message">expected HTTP 200</stringProp>
+<stringProp name="Assertion.test_field">Assertion.response_code</stringProp>
+<boolProp name="Assertion.assume_success">false</boolProp>
+<intProp name="Assertion.test_type">8</intProp>
+</ResponseAssertion>
+<hashTree></hashTree>
+</hashTree>
+</hashTree>
+<IfController guiclass="IfControllerPanel" testclass="IfController" testname="Product detail (DETAIL_PCT % of iterations)">
+<stringProp name="IfController.condition">${__jexl3("${scenario}" == "detail")}</stringProp>
+<boolProp name="IfController.evaluateAll">false</boolProp>
+<boolProp name="IfController.useExpression">true</boolProp>
+</IfController>
+<hashTree><HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="GET /products/{id}">
+<stringProp name="HTTPSampler.domain"></stringProp>
+<stringProp name="HTTPSampler.port"></stringProp>
+<stringProp name="HTTPSampler.path">/api/v1/products/${productId}</stringProp>
+<stringProp name="HTTPSampler.method">GET</stringProp>
+<boolProp name="HTTPSampler.follow_redirects">true</boolProp>
+<boolProp name="HTTPSampler.use_keepalive">true</boolProp>
+<elementProp name="HTTPsampler.Arguments" elementType="Arguments" guiclass="HTTPArgumentsPanel" testclass="Arguments" testname="User Defined Variables"><collectionProp name="Arguments.arguments"/></elementProp>
+</HTTPSamplerProxy>
+<hashTree><ResponseAssertion guiclass="AssertionGui" testclass="ResponseAssertion" testname="HTTP 200">
+<collectionProp name="Asserion.test_strings"><stringProp name="0">200</stringProp></collectionProp>
+<stringProp name="Assertion.custom_message">expected HTTP 200</stringProp>
+<stringProp name="Assertion.test_field">Assertion.response_code</stringProp>
+<boolProp name="Assertion.assume_success">false</boolProp>
+<intProp name="Assertion.test_type">8</intProp>
+</ResponseAssertion>
+<hashTree></hashTree>
+</hashTree>
+<HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="GET /users/{id}">
+<stringProp name="HTTPSampler.domain"></stringProp>
+<stringProp name="HTTPSampler.port"></stringProp>
+<stringProp name="HTTPSampler.path">/api/v1/users/${userId}</stringProp>
+<stringProp name="HTTPSampler.method">GET</stringProp>
+<boolProp name="HTTPSampler.follow_redirects">true</boolProp>
+<boolProp name="HTTPSampler.use_keepalive">true</boolProp>
+<elementProp name="HTTPsampler.Arguments" elementType="Arguments" guiclass="HTTPArgumentsPanel" testclass="Arguments" testname="User Defined Variables"><collectionProp name="Arguments.arguments"/></elementProp>
+</HTTPSamplerProxy>
+<hashTree><ResponseAssertion guiclass="AssertionGui" testclass="ResponseAssertion" testname="HTTP 200">
+<collectionProp name="Asserion.test_strings"><stringProp name="0">200</stringProp></collectionProp>
+<stringProp name="Assertion.custom_message">expected HTTP 200</stringProp>
+<stringProp name="Assertion.test_field">Assertion.response_code</stringProp>
+<boolProp name="Assertion.assume_success">false</boolProp>
+<intProp name="Assertion.test_type">8</intProp>
+</ResponseAssertion>
+<hashTree></hashTree>
+</hashTree>
+</hashTree>
+<IfController guiclass="IfControllerPanel" testclass="IfController" testname="Order (rest of the iterations)">
+<stringProp name="IfController.condition">${__jexl3("${scenario}" == "order")}</stringProp>
+<boolProp name="IfController.evaluateAll">false</boolProp>
+<boolProp name="IfController.useExpression">true</boolProp>
+</IfController>
+<hashTree><HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="POST /carts">
+<stringProp name="HTTPSampler.domain"></stringProp>
+<stringProp name="HTTPSampler.port"></stringProp>
+<stringProp name="HTTPSampler.path">/api/v1/carts</stringProp>
+<stringProp name="HTTPSampler.method">POST</stringProp>
+<boolProp name="HTTPSampler.follow_redirects">true</boolProp>
+<boolProp name="HTTPSampler.use_keepalive">true</boolProp>
+<boolProp name="HTTPSampler.postBodyRaw">true</boolProp><elementProp name="HTTPsampler.Arguments" elementType="Arguments"><collectionProp name="Arguments.arguments"><elementProp name="" elementType="HTTPArgument"><boolProp name="HTTPArgument.always_encode">false</boolProp><stringProp name="Argument.value">{"productId":${productId},"quantity":1}</stringProp><stringProp name="Argument.metadata">=</stringProp></elementProp></collectionProp></elementProp>
+</HTTPSamplerProxy>
+<hashTree><ResponseAssertion guiclass="AssertionGui" testclass="ResponseAssertion" testname="HTTP 201">
+<collectionProp name="Asserion.test_strings"><stringProp name="0">201</stringProp></collectionProp>
+<stringProp name="Assertion.custom_message">expected HTTP 201</stringProp>
+<stringProp name="Assertion.test_field">Assertion.response_code</stringProp>
+<boolProp name="Assertion.assume_success">false</boolProp>
+<intProp name="Assertion.test_type">8</intProp>
+</ResponseAssertion>
+<hashTree></hashTree>
+</hashTree>
+<HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="POST /carts">
+<stringProp name="HTTPSampler.domain"></stringProp>
+<stringProp name="HTTPSampler.port"></stringProp>
+<stringProp name="HTTPSampler.path">/api/v1/carts</stringProp>
+<stringProp name="HTTPSampler.method">POST</stringProp>
+<boolProp name="HTTPSampler.follow_redirects">true</boolProp>
+<boolProp name="HTTPSampler.use_keepalive">true</boolProp>
+<boolProp name="HTTPSampler.postBodyRaw">true</boolProp><elementProp name="HTTPsampler.Arguments" elementType="Arguments"><collectionProp name="Arguments.arguments"><elementProp name="" elementType="HTTPArgument"><boolProp name="HTTPArgument.always_encode">false</boolProp><stringProp name="Argument.value">{"productId":${productId2},"quantity":1}</stringProp><stringProp name="Argument.metadata">=</stringProp></elementProp></collectionProp></elementProp>
+</HTTPSamplerProxy>
+<hashTree><ResponseAssertion guiclass="AssertionGui" testclass="ResponseAssertion" testname="HTTP 201">
+<collectionProp name="Asserion.test_strings"><stringProp name="0">201</stringProp></collectionProp>
+<stringProp name="Assertion.custom_message">expected HTTP 201</stringProp>
+<stringProp name="Assertion.test_field">Assertion.response_code</stringProp>
+<boolProp name="Assertion.assume_success">false</boolProp>
+<intProp name="Assertion.test_type">8</intProp>
+</ResponseAssertion>
+<hashTree></hashTree>
+</hashTree>
+<HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="GET /carts">
+<stringProp name="HTTPSampler.domain"></stringProp>
+<stringProp name="HTTPSampler.port"></stringProp>
+<stringProp name="HTTPSampler.path">/api/v1/carts</stringProp>
+<stringProp name="HTTPSampler.method">GET</stringProp>
+<boolProp name="HTTPSampler.follow_redirects">true</boolProp>
+<boolProp name="HTTPSampler.use_keepalive">true</boolProp>
+<elementProp name="HTTPsampler.Arguments" elementType="Arguments" guiclass="HTTPArgumentsPanel" testclass="Arguments" testname="User Defined Variables"><collectionProp name="Arguments.arguments"/></elementProp>
+</HTTPSamplerProxy>
+<hashTree><ResponseAssertion guiclass="AssertionGui" testclass="ResponseAssertion" testname="HTTP 200">
+<collectionProp name="Asserion.test_strings"><stringProp name="0">200</stringProp></collectionProp>
+<stringProp name="Assertion.custom_message">expected HTTP 200</stringProp>
+<stringProp name="Assertion.test_field">Assertion.response_code</stringProp>
+<boolProp name="Assertion.assume_success">false</boolProp>
+<intProp name="Assertion.test_type">8</intProp>
+</ResponseAssertion>
+<hashTree></hashTree>
+</hashTree>
+<HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="POST /orders">
+<stringProp name="HTTPSampler.domain"></stringProp>
+<stringProp name="HTTPSampler.port"></stringProp>
+<stringProp name="HTTPSampler.path">/api/v1/orders</stringProp>
+<stringProp name="HTTPSampler.method">POST</stringProp>
+<boolProp name="HTTPSampler.follow_redirects">true</boolProp>
+<boolProp name="HTTPSampler.use_keepalive">true</boolProp>
+<boolProp name="HTTPSampler.postBodyRaw">true</boolProp><elementProp name="HTTPsampler.Arguments" elementType="Arguments"><collectionProp name="Arguments.arguments"><elementProp name="" elementType="HTTPArgument"><boolProp name="HTTPArgument.always_encode">false</boolProp><stringProp name="Argument.value"></stringProp><stringProp name="Argument.metadata">=</stringProp></elementProp></collectionProp></elementProp>
+</HTTPSamplerProxy>
+<hashTree><ResponseAssertion guiclass="AssertionGui" testclass="ResponseAssertion" testname="HTTP 201">
+<collectionProp name="Asserion.test_strings"><stringProp name="0">201</stringProp></collectionProp>
+<stringProp name="Assertion.custom_message">expected HTTP 201</stringProp>
+<stringProp name="Assertion.test_field">Assertion.response_code</stringProp>
+<boolProp name="Assertion.assume_success">false</boolProp>
+<intProp name="Assertion.test_type">8</intProp>
+</ResponseAssertion>
+<hashTree></hashTree>
+</hashTree>
+</hashTree>
+<TestAction guiclass="TestActionGui" testclass="TestAction" testname="Think time (THINK_MS)">
+<intProp name="ActionProcessor.action">1</intProp>
+<intProp name="ActionProcessor.target">0</intProp>
+<stringProp name="ActionProcessor.duration">${THINK_MS}</stringProp>
+</TestAction>
+<hashTree></hashTree>
+</hashTree>
+</hashTree>
+</hashTree>
+</jmeterTestPlan>
