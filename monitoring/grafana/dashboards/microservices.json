@@ -77,7 +77,7 @@
     {
       "type": "row",
       "id": 1,
-      "title": "Overview",
+      "title": "Run summary (whole selected time range)",
       "collapsed": false,
       "gridPos": {
         "h": 1,
@@ -90,6 +90,383 @@
     {
       "type": "stat",
       "id": 2,
+      "title": "Throughput (avg req/s)",
+      "description": "Requests handled by the server divided by the length of the selected time range. Select exactly one test run.",
+      "datasource": {
+        "type": "prometheus",
+        "uid": "prometheus"
+      },
+      "gridPos": {
+        "h": 4,
+        "w": 4,
+        "x": 0,
+        "y": 1
+      },
+      "fieldConfig": {
+        "defaults": {
+          "unit": "reqps",
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              }
+            ]
+          },
+          "decimals": 1
+        },
+        "overrides": []
+      },
+      "options": {
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "",
+          "values": false
+        },
+        "colorMode": "background",
+        "graphMode": "none",
+        "textMode": "value"
+      },
+      "targets": [
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "prometheus"
+          },
+          "refId": "A",
+          "expr": "sum(increase(http_server_requests_seconds_count{architecture=\"microservices\", application=~\"$service\", uri!~\"/actuator.*\"}[$__range])) / $__range_s",
+          "instant": true,
+          "range": false
+        }
+      ]
+    },
+    {
+      "type": "stat",
+      "id": 3,
+      "title": "Average response time",
+      "description": "Mean server-side processing time over the selected range (does not include the network trip to JMeter)",
+      "datasource": {
+        "type": "prometheus",
+        "uid": "prometheus"
+      },
+      "gridPos": {
+        "h": 4,
+        "w": 4,
+        "x": 4,
+        "y": 1
+      },
+      "fieldConfig": {
+        "defaults": {
+          "unit": "s",
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "orange",
+                "value": 0.2
+              },
+              {
+                "color": "red",
+                "value": 1
+              }
+            ]
+          }
+        },
+        "overrides": []
+      },
+      "options": {
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "",
+          "values": false
+        },
+        "colorMode": "background",
+        "graphMode": "none",
+        "textMode": "value"
+      },
+      "targets": [
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "prometheus"
+          },
+          "refId": "A",
+          "expr": "sum(increase(http_server_requests_seconds_sum{architecture=\"microservices\", application=~\"$service\", uri!~\"/actuator.*\"}[$__range])) / sum(increase(http_server_requests_seconds_count{architecture=\"microservices\", application=~\"$service\", uri!~\"/actuator.*\"}[$__range]))",
+          "instant": true,
+          "range": false
+        }
+      ]
+    },
+    {
+      "type": "stat",
+      "id": 4,
+      "title": "p95 response time",
+      "description": "95 % of requests in the selected range were faster than this (server side)",
+      "datasource": {
+        "type": "prometheus",
+        "uid": "prometheus"
+      },
+      "gridPos": {
+        "h": 4,
+        "w": 4,
+        "x": 8,
+        "y": 1
+      },
+      "fieldConfig": {
+        "defaults": {
+          "unit": "s",
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "orange",
+                "value": 0.2
+              },
+              {
+                "color": "red",
+                "value": 1
+              }
+            ]
+          }
+        },
+        "overrides": []
+      },
+      "options": {
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "",
+          "values": false
+        },
+        "colorMode": "background",
+        "graphMode": "none",
+        "textMode": "value"
+      },
+      "targets": [
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "prometheus"
+          },
+          "refId": "A",
+          "expr": "histogram_quantile(0.95, sum by (le) (increase(http_server_requests_seconds_bucket{architecture=\"microservices\", application=~\"$service\", uri!~\"/actuator.*\"}[$__range])))",
+          "instant": true,
+          "range": false
+        }
+      ]
+    },
+    {
+      "type": "stat",
+      "id": 5,
+      "title": "p99 response time",
+      "description": "99 % of requests in the selected range were faster than this (server side)",
+      "datasource": {
+        "type": "prometheus",
+        "uid": "prometheus"
+      },
+      "gridPos": {
+        "h": 4,
+        "w": 4,
+        "x": 12,
+        "y": 1
+      },
+      "fieldConfig": {
+        "defaults": {
+          "unit": "s",
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "orange",
+                "value": 0.2
+              },
+              {
+                "color": "red",
+                "value": 1
+              }
+            ]
+          }
+        },
+        "overrides": []
+      },
+      "options": {
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "",
+          "values": false
+        },
+        "colorMode": "background",
+        "graphMode": "none",
+        "textMode": "value"
+      },
+      "targets": [
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "prometheus"
+          },
+          "refId": "A",
+          "expr": "histogram_quantile(0.99, sum by (le) (increase(http_server_requests_seconds_bucket{architecture=\"microservices\", application=~\"$service\", uri!~\"/actuator.*\"}[$__range])))",
+          "instant": true,
+          "range": false
+        }
+      ]
+    },
+    {
+      "type": "stat",
+      "id": 6,
+      "title": "Requests (total)",
+      "description": "Requests handled by the server in the selected range",
+      "datasource": {
+        "type": "prometheus",
+        "uid": "prometheus"
+      },
+      "gridPos": {
+        "h": 4,
+        "w": 4,
+        "x": 16,
+        "y": 1
+      },
+      "fieldConfig": {
+        "defaults": {
+          "unit": "short",
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              }
+            ]
+          },
+          "decimals": 0
+        },
+        "overrides": []
+      },
+      "options": {
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "",
+          "values": false
+        },
+        "colorMode": "background",
+        "graphMode": "none",
+        "textMode": "value"
+      },
+      "targets": [
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "prometheus"
+          },
+          "refId": "A",
+          "expr": "sum(increase(http_server_requests_seconds_count{architecture=\"microservices\", application=~\"$service\", uri!~\"/actuator.*\"}[$__range]))",
+          "instant": true,
+          "range": false
+        }
+      ]
+    },
+    {
+      "type": "stat",
+      "id": 7,
+      "title": "Errors (5xx)",
+      "description": "Server errors only: requests refused or timed out before reaching the application are counted by JMeter, not here",
+      "datasource": {
+        "type": "prometheus",
+        "uid": "prometheus"
+      },
+      "gridPos": {
+        "h": 4,
+        "w": 4,
+        "x": 20,
+        "y": 1
+      },
+      "fieldConfig": {
+        "defaults": {
+          "unit": "percentunit",
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "orange",
+                "value": 0.01
+              },
+              {
+                "color": "red",
+                "value": 0.05
+              }
+            ]
+          }
+        },
+        "overrides": []
+      },
+      "options": {
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "",
+          "values": false
+        },
+        "colorMode": "background",
+        "graphMode": "none",
+        "textMode": "value"
+      },
+      "targets": [
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "prometheus"
+          },
+          "refId": "A",
+          "expr": "(sum(increase(http_server_requests_seconds_count{architecture=\"microservices\", application=~\"$service\", uri!~\"/actuator.*\", status=~\"5..\"}[$__range])) or vector(0)) / sum(increase(http_server_requests_seconds_count{architecture=\"microservices\", application=~\"$service\", uri!~\"/actuator.*\"}[$__range]))",
+          "instant": true,
+          "range": false
+        }
+      ]
+    },
+    {
+      "type": "row",
+      "id": 8,
+      "title": "Overview",
+      "collapsed": false,
+      "gridPos": {
+        "h": 1,
+        "w": 24,
+        "x": 0,
+        "y": 5
+      },
+      "panels": []
+    },
+    {
+      "type": "stat",
+      "id": 9,
       "title": "Services up",
       "description": "",
       "datasource": {
@@ -100,7 +477,7 @@
         "h": 4,
         "w": 3,
         "x": 0,
-        "y": 1
+        "y": 6
       },
       "fieldConfig": {
         "defaults": {
@@ -146,13 +523,14 @@
           },
           "refId": "A",
           "expr": "sum(up{job=\"microservices\"})",
-          "instant": false
+          "instant": false,
+          "range": true
         }
       ]
     },
     {
       "type": "stat",
-      "id": 3,
+      "id": 10,
       "title": "Requests/s",
       "description": "",
       "datasource": {
@@ -163,7 +541,7 @@
         "h": 4,
         "w": 3,
         "x": 3,
-        "y": 1
+        "y": 6
       },
       "fieldConfig": {
         "defaults": {
@@ -201,13 +579,14 @@
           },
           "refId": "A",
           "expr": "sum(rate(http_server_requests_seconds_count{architecture=\"microservices\", application=~\"$service\", uri!~\"/actuator.*\"}[$__rate_interval]))",
-          "instant": false
+          "instant": false,
+          "range": true
         }
       ]
     },
     {
       "type": "stat",
-      "id": 4,
+      "id": 11,
       "title": "p95 latency",
       "description": "",
       "datasource": {
@@ -218,7 +597,7 @@
         "h": 4,
         "w": 3,
         "x": 6,
-        "y": 1
+        "y": 6
       },
       "fieldConfig": {
         "defaults": {
@@ -263,13 +642,14 @@
           },
           "refId": "A",
           "expr": "histogram_quantile(0.95, sum by (le) (rate(http_server_requests_seconds_bucket{architecture=\"microservices\", application=~\"$service\", uri!~\"/actuator.*\"}[$__rate_interval])))",
-          "instant": false
+          "instant": false,
+          "range": true
         }
       ]
     },
     {
       "type": "stat",
-      "id": 5,
+      "id": 12,
       "title": "Error rate (5xx)",
       "description": "",
       "datasource": {
@@ -280,7 +660,7 @@
         "h": 4,
         "w": 3,
         "x": 9,
-        "y": 1
+        "y": 6
       },
       "fieldConfig": {
         "defaults": {
@@ -325,13 +705,14 @@
           },
           "refId": "A",
           "expr": "(sum(rate(http_server_requests_seconds_count{architecture=\"microservices\", application=~\"$service\", uri!~\"/actuator.*\", status=~\"5..\"}[$__rate_interval])) or vector(0)) / sum(rate(http_server_requests_seconds_count{architecture=\"microservices\", application=~\"$service\", uri!~\"/actuator.*\"}[$__rate_interval]))",
-          "instant": false
+          "instant": false,
+          "range": true
         }
       ]
     },
     {
       "type": "stat",
-      "id": 6,
+      "id": 13,
       "title": "CPU (cores)",
       "description": "",
       "datasource": {
@@ -342,7 +723,7 @@
         "h": 4,
         "w": 3,
         "x": 12,
-        "y": 1
+        "y": 6
       },
       "fieldConfig": {
         "defaults": {
@@ -380,13 +761,14 @@
           },
           "refId": "A",
           "expr": "sum(rate(container_cpu_usage_seconds_total{name=~\"$service\"}[$__rate_interval]))",
-          "instant": false
+          "instant": false,
+          "range": true
         }
       ]
     },
     {
       "type": "stat",
-      "id": 7,
+      "id": 14,
       "title": "Memory (working set)",
       "description": "",
       "datasource": {
@@ -397,7 +779,7 @@
         "h": 4,
         "w": 3,
         "x": 15,
-        "y": 1
+        "y": 6
       },
       "fieldConfig": {
         "defaults": {
@@ -434,13 +816,14 @@
           },
           "refId": "A",
           "expr": "sum(container_memory_working_set_bytes{name=~\"$service\"})",
-          "instant": false
+          "instant": false,
+          "range": true
         }
       ]
     },
     {
       "type": "stat",
-      "id": 8,
+      "id": 15,
       "title": "DB connections active",
       "description": "",
       "datasource": {
@@ -451,7 +834,7 @@
         "h": 4,
         "w": 3,
         "x": 18,
-        "y": 1
+        "y": 6
       },
       "fieldConfig": {
         "defaults": {
@@ -489,13 +872,14 @@
           },
           "refId": "A",
           "expr": "sum(hikaricp_connections_active{architecture=\"microservices\", application=~\"$service\"})",
-          "instant": false
+          "instant": false,
+          "range": true
         }
       ]
     },
     {
       "type": "stat",
-      "id": 9,
+      "id": 16,
       "title": "Uptime",
       "description": "",
       "datasource": {
@@ -506,7 +890,7 @@
         "h": 4,
         "w": 3,
         "x": 21,
-        "y": 1
+        "y": 6
       },
       "fieldConfig": {
         "defaults": {
@@ -543,26 +927,27 @@
           },
           "refId": "A",
           "expr": "min(process_uptime_seconds{architecture=\"microservices\", application=~\"$service\"})",
-          "instant": false
+          "instant": false,
+          "range": true
         }
       ]
     },
     {
       "type": "row",
-      "id": 10,
+      "id": 17,
       "title": "HTTP (REST API)",
       "collapsed": false,
       "gridPos": {
         "h": 1,
         "w": 24,
         "x": 0,
-        "y": 5
+        "y": 10
       },
       "panels": []
     },
     {
       "type": "timeseries",
-      "id": 11,
+      "id": 18,
       "title": "Requests/s per endpoint",
       "description": "",
       "datasource": {
@@ -573,7 +958,7 @@
         "h": 8,
         "w": 12,
         "x": 0,
-        "y": 6
+        "y": 11
       },
       "fieldConfig": {
         "defaults": {
@@ -614,8 +999,8 @@
     },
     {
       "type": "timeseries",
-      "id": 12,
-      "title": "Latency percentiles (all endpoints)",
+      "id": 19,
+      "title": "Response time: average, p50, p95, p99 (all endpoints)",
       "description": "",
       "datasource": {
         "type": "prometheus",
@@ -625,7 +1010,7 @@
         "h": 8,
         "w": 12,
         "x": 12,
-        "y": 6
+        "y": 11
       },
       "fieldConfig": {
         "defaults": {
@@ -659,6 +1044,15 @@
             "uid": "prometheus"
           },
           "refId": "A",
+          "expr": "sum(rate(http_server_requests_seconds_sum{architecture=\"microservices\", application=~\"$service\", uri!~\"/actuator.*\"}[$__rate_interval])) / sum(rate(http_server_requests_seconds_count{architecture=\"microservices\", application=~\"$service\", uri!~\"/actuator.*\"}[$__rate_interval]))",
+          "legendFormat": "avg"
+        },
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "prometheus"
+          },
+          "refId": "B",
           "expr": "histogram_quantile(0.5, sum by (le) (rate(http_server_requests_seconds_bucket{architecture=\"microservices\", application=~\"$service\", uri!~\"/actuator.*\"}[$__rate_interval])))",
           "legendFormat": "p50"
         },
@@ -667,7 +1061,7 @@
             "type": "prometheus",
             "uid": "prometheus"
           },
-          "refId": "B",
+          "refId": "C",
           "expr": "histogram_quantile(0.95, sum by (le) (rate(http_server_requests_seconds_bucket{architecture=\"microservices\", application=~\"$service\", uri!~\"/actuator.*\"}[$__rate_interval])))",
           "legendFormat": "p95"
         },
@@ -676,7 +1070,7 @@
             "type": "prometheus",
             "uid": "prometheus"
           },
-          "refId": "C",
+          "refId": "D",
           "expr": "histogram_quantile(0.99, sum by (le) (rate(http_server_requests_seconds_bucket{architecture=\"microservices\", application=~\"$service\", uri!~\"/actuator.*\"}[$__rate_interval])))",
           "legendFormat": "p99"
         }
@@ -684,8 +1078,8 @@
     },
     {
       "type": "timeseries",
-      "id": 13,
-      "title": "p95 latency per endpoint",
+      "id": 20,
+      "title": "Average response time per endpoint",
       "description": "",
       "datasource": {
         "type": "prometheus",
@@ -695,7 +1089,59 @@
         "h": 8,
         "w": 12,
         "x": 0,
-        "y": 14
+        "y": 19
+      },
+      "fieldConfig": {
+        "defaults": {
+          "unit": "s",
+          "custom": {
+            "lineWidth": 2,
+            "fillOpacity": 10
+          }
+        },
+        "overrides": []
+      },
+      "options": {
+        "legend": {
+          "displayMode": "table",
+          "placement": "bottom",
+          "calcs": [
+            "mean",
+            "max",
+            "lastNotNull"
+          ]
+        },
+        "tooltip": {
+          "mode": "multi",
+          "sort": "desc"
+        }
+      },
+      "targets": [
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "prometheus"
+          },
+          "refId": "A",
+          "expr": "sum by (application, method, uri) (rate(http_server_requests_seconds_sum{architecture=\"microservices\", application=~\"$service\", uri!~\"/actuator.*\"}[$__rate_interval])) / sum by (application, method, uri) (rate(http_server_requests_seconds_count{architecture=\"microservices\", application=~\"$service\", uri!~\"/actuator.*\"}[$__rate_interval]))",
+          "legendFormat": "{{application}} {{method}} {{uri}}"
+        }
+      ]
+    },
+    {
+      "type": "timeseries",
+      "id": 21,
+      "title": "p95 latency per endpoint",
+      "description": "",
+      "datasource": {
+        "type": "prometheus",
+        "uid": "prometheus"
+      },
+      "gridPos": {
+        "h": 8,
+        "w": 12,
+        "x": 12,
+        "y": 19
       },
       "fieldConfig": {
         "defaults": {
@@ -736,7 +1182,7 @@
     },
     {
       "type": "timeseries",
-      "id": 14,
+      "id": 22,
       "title": "Responses per status",
       "description": "",
       "datasource": {
@@ -746,8 +1192,8 @@
       "gridPos": {
         "h": 8,
         "w": 12,
-        "x": 12,
-        "y": 14
+        "x": 0,
+        "y": 27
       },
       "fieldConfig": {
         "defaults": {
@@ -792,7 +1238,7 @@
     },
     {
       "type": "timeseries",
-      "id": 15,
+      "id": 23,
       "title": "Requests/s per service",
       "description": "",
       "datasource": {
@@ -802,8 +1248,8 @@
       "gridPos": {
         "h": 8,
         "w": 12,
-        "x": 0,
-        "y": 22
+        "x": 12,
+        "y": 27
       },
       "fieldConfig": {
         "defaults": {
@@ -844,7 +1290,7 @@
     },
     {
       "type": "timeseries",
-      "id": 16,
+      "id": 24,
       "title": "p95 latency per service",
       "description": "",
       "datasource": {
@@ -854,8 +1300,8 @@
       "gridPos": {
         "h": 8,
         "w": 12,
-        "x": 12,
-        "y": 22
+        "x": 0,
+        "y": 35
       },
       "fieldConfig": {
         "defaults": {
@@ -896,20 +1342,20 @@
     },
     {
       "type": "row",
-      "id": 17,
+      "id": 25,
       "title": "gRPC (service-to-service)",
       "collapsed": false,
       "gridPos": {
         "h": 1,
         "w": 24,
         "x": 0,
-        "y": 30
+        "y": 43
       },
       "panels": []
     },
     {
       "type": "timeseries",
-      "id": 18,
+      "id": 26,
       "title": "Client calls/s (order-service -> user/product)",
       "description": "",
       "datasource": {
@@ -920,7 +1366,7 @@
         "h": 8,
         "w": 12,
         "x": 0,
-        "y": 31
+        "y": 44
       },
       "fieldConfig": {
         "defaults": {
@@ -961,7 +1407,7 @@
     },
     {
       "type": "timeseries",
-      "id": 19,
+      "id": 27,
       "title": "Client latency (p50 / p95 / p99)",
       "description": "Network + remote processing time seen by order-service",
       "datasource": {
@@ -972,7 +1418,7 @@
         "h": 8,
         "w": 12,
         "x": 12,
-        "y": 31
+        "y": 44
       },
       "fieldConfig": {
         "defaults": {
@@ -1031,7 +1477,7 @@
     },
     {
       "type": "timeseries",
-      "id": 20,
+      "id": 28,
       "title": "Server calls/s",
       "description": "",
       "datasource": {
@@ -1042,7 +1488,7 @@
         "h": 8,
         "w": 12,
         "x": 0,
-        "y": 39
+        "y": 52
       },
       "fieldConfig": {
         "defaults": {
@@ -1083,7 +1529,7 @@
     },
     {
       "type": "timeseries",
-      "id": 21,
+      "id": 29,
       "title": "Server latency p95",
       "description": "Processing time inside user-service / product-service",
       "datasource": {
@@ -1094,7 +1540,7 @@
         "h": 8,
         "w": 12,
         "x": 12,
-        "y": 39
+        "y": 52
       },
       "fieldConfig": {
         "defaults": {
@@ -1135,7 +1581,7 @@
     },
     {
       "type": "timeseries",
-      "id": 22,
+      "id": 30,
       "title": "gRPC errors/s",
       "description": "",
       "datasource": {
@@ -1146,7 +1592,7 @@
         "h": 6,
         "w": 24,
         "x": 0,
-        "y": 47
+        "y": 60
       },
       "fieldConfig": {
         "defaults": {
@@ -1196,20 +1642,20 @@
     },
     {
       "type": "row",
-      "id": 23,
+      "id": 31,
       "title": "JVM",
       "collapsed": false,
       "gridPos": {
         "h": 1,
         "w": 24,
         "x": 0,
-        "y": 53
+        "y": 66
       },
       "panels": []
     },
     {
       "type": "timeseries",
-      "id": 24,
+      "id": 32,
       "title": "Heap used / max",
       "description": "",
       "datasource": {
@@ -1220,7 +1666,7 @@
         "h": 8,
         "w": 12,
         "x": 0,
-        "y": 54
+        "y": 67
       },
       "fieldConfig": {
         "defaults": {
@@ -1270,7 +1716,7 @@
     },
     {
       "type": "timeseries",
-      "id": 25,
+      "id": 33,
       "title": "Non-heap used",
       "description": "",
       "datasource": {
@@ -1281,7 +1727,7 @@
         "h": 8,
         "w": 12,
         "x": 12,
-        "y": 54
+        "y": 67
       },
       "fieldConfig": {
         "defaults": {
@@ -1322,7 +1768,7 @@
     },
     {
       "type": "timeseries",
-      "id": 26,
+      "id": 34,
       "title": "GC pause time per second",
       "description": "",
       "datasource": {
@@ -1333,7 +1779,7 @@
         "h": 8,
         "w": 12,
         "x": 0,
-        "y": 62
+        "y": 75
       },
       "fieldConfig": {
         "defaults": {
@@ -1374,7 +1820,7 @@
     },
     {
       "type": "timeseries",
-      "id": 27,
+      "id": 35,
       "title": "Process CPU usage (of the container CPUs)",
       "description": "",
       "datasource": {
@@ -1385,7 +1831,7 @@
         "h": 8,
         "w": 12,
         "x": 12,
-        "y": 62
+        "y": 75
       },
       "fieldConfig": {
         "defaults": {
@@ -1426,7 +1872,7 @@
     },
     {
       "type": "timeseries",
-      "id": 28,
+      "id": 36,
       "title": "Live threads",
       "description": "",
       "datasource": {
@@ -1437,7 +1883,7 @@
         "h": 8,
         "w": 12,
         "x": 0,
-        "y": 70
+        "y": 83
       },
       "fieldConfig": {
         "defaults": {
@@ -1478,7 +1924,7 @@
     },
     {
       "type": "timeseries",
-      "id": 29,
+      "id": 37,
       "title": "Classes loaded",
       "description": "",
       "datasource": {
@@ -1489,7 +1935,7 @@
         "h": 8,
         "w": 12,
         "x": 12,
-        "y": 70
+        "y": 83
       },
       "fieldConfig": {
         "defaults": {
@@ -1530,20 +1976,20 @@
     },
     {
       "type": "row",
-      "id": 30,
+      "id": 38,
       "title": "Database connection pool (HikariCP)",
       "collapsed": false,
       "gridPos": {
         "h": 1,
         "w": 24,
         "x": 0,
-        "y": 78
+        "y": 91
       },
       "panels": []
     },
     {
       "type": "timeseries",
-      "id": 31,
+      "id": 39,
       "title": "Connections",
       "description": "",
       "datasource": {
@@ -1554,7 +2000,7 @@
         "h": 8,
         "w": 12,
         "x": 0,
-        "y": 79
+        "y": 92
       },
       "fieldConfig": {
         "defaults": {
@@ -1622,7 +2068,7 @@
     },
     {
       "type": "timeseries",
-      "id": 32,
+      "id": 40,
       "title": "Connection acquire / usage time (avg)",
       "description": "",
       "datasource": {
@@ -1633,7 +2079,7 @@
         "h": 8,
         "w": 12,
         "x": 12,
-        "y": 79
+        "y": 92
       },
       "fieldConfig": {
         "defaults": {
@@ -1683,20 +2129,20 @@
     },
     {
       "type": "row",
-      "id": 33,
+      "id": 41,
       "title": "Container resources (cAdvisor)",
       "collapsed": false,
       "gridPos": {
         "h": 1,
         "w": 24,
         "x": 0,
-        "y": 87
+        "y": 100
       },
       "panels": []
     },
     {
       "type": "timeseries",
-      "id": 34,
+      "id": 42,
       "title": "CPU (cores) vs limit",
       "description": "",
       "datasource": {
@@ -1707,7 +2153,7 @@
         "h": 8,
         "w": 12,
         "x": 0,
-        "y": 88
+        "y": 101
       },
       "fieldConfig": {
         "defaults": {
@@ -1766,7 +2212,7 @@
     },
     {
       "type": "timeseries",
-      "id": 35,
+      "id": 43,
       "title": "Memory working set vs limit",
       "description": "",
       "datasource": {
@@ -1777,7 +2223,7 @@
         "h": 8,
         "w": 12,
         "x": 12,
-        "y": 88
+        "y": 101
       },
       "fieldConfig": {
         "defaults": {
@@ -1836,7 +2282,7 @@
     },
     {
       "type": "timeseries",
-      "id": 36,
+      "id": 44,
       "title": "CPU throttling (s/s)",
       "description": "Time the container wanted CPU but was capped by its limit: >0 means the CPU limit is the bottleneck",
       "datasource": {
@@ -1847,7 +2293,7 @@
         "h": 8,
         "w": 12,
         "x": 0,
-        "y": 96
+        "y": 109
       },
       "fieldConfig": {
         "defaults": {
@@ -1888,7 +2334,7 @@
     },
     {
       "type": "timeseries",
-      "id": 37,
+      "id": 45,
       "title": "Network I/O",
       "description": "",
       "datasource": {
@@ -1899,7 +2345,7 @@
         "h": 8,
         "w": 12,
         "x": 12,
-        "y": 96
+        "y": 109
       },
       "fieldConfig": {
         "defaults": {
@@ -1949,20 +2395,20 @@
     },
     {
       "type": "row",
-      "id": 38,
+      "id": 46,
       "title": "Shared infrastructure (PostgreSQL / host)",
       "collapsed": false,
       "gridPos": {
         "h": 1,
         "w": 24,
         "x": 0,
-        "y": 104
+        "y": 117
       },
       "panels": []
     },
     {
       "type": "timeseries",
-      "id": 39,
+      "id": 47,
       "title": "PostgreSQL CPU (cores)",
       "description": "",
       "datasource": {
@@ -1973,7 +2419,7 @@
         "h": 8,
         "w": 8,
         "x": 0,
-        "y": 105
+        "y": 118
       },
       "fieldConfig": {
         "defaults": {
@@ -2014,7 +2460,7 @@
     },
     {
       "type": "timeseries",
-      "id": 40,
+      "id": 48,
       "title": "PostgreSQL memory",
       "description": "",
       "datasource": {
@@ -2025,7 +2471,7 @@
         "h": 8,
         "w": 8,
         "x": 8,
-        "y": 105
+        "y": 118
       },
       "fieldConfig": {
         "defaults": {
@@ -2066,7 +2512,7 @@
     },
     {
       "type": "timeseries",
-      "id": 41,
+      "id": 49,
       "title": "Host CPU / memory (node-exporter)",
       "description": "Docker VM running all containers (and the load generator if it runs in Docker)",
       "datasource": {
@@ -2077,7 +2523,7 @@
         "h": 8,
         "w": 8,
         "x": 16,
-        "y": 105
+        "y": 118
       },
       "fieldConfig": {
         "defaults": {
@@ -2127,20 +2573,20 @@
     },
     {
       "type": "row",
-      "id": 42,
+      "id": 50,
       "title": "Logs (Fluent Bit -> Loki)",
       "collapsed": false,
       "gridPos": {
         "h": 1,
         "w": 24,
         "x": 0,
-        "y": 113
+        "y": 126
       },
       "panels": []
     },
     {
       "type": "timeseries",
-      "id": 43,
+      "id": 51,
       "title": "Log lines/s per level",
       "description": "",
       "datasource": {
@@ -2151,7 +2597,7 @@
         "h": 6,
         "w": 24,
         "x": 0,
-        "y": 114
+        "y": 127
       },
       "fieldConfig": {
         "defaults": {
@@ -2192,7 +2638,7 @@
     },
     {
       "type": "logs",
-      "id": 44,
+      "id": 52,
       "title": "Application logs",
       "datasource": {
         "type": "loki",
@@ -2202,7 +2648,7 @@
         "h": 12,
         "w": 24,
         "x": 0,
-        "y": 120
+        "y": 133
       },
       "options": {
         "showTime": true,
