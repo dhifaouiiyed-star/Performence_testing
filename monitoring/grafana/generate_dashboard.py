@@ -36,7 +36,7 @@ class Dashboard:
                             "gridPos": {"h": 1, "w": 24, "x": 0, "y": self._y}, "panels": []})
         self._y += 1
 
-    def stat(self, title, expr, unit="short", w=3, decimals=None, thresholds=None, desc=""):
+    def stat(self, title, expr, unit="short", w=3, decimals=None, thresholds=None, desc="", instant=False):
         steps = thresholds or [{"color": "green", "value": None}]
         defaults = {"unit": unit, "thresholds": {"mode": "absolute", "steps": steps}}
         if decimals is not None:
@@ -46,8 +46,8 @@ class Dashboard:
             "gridPos": self._pos(w, 4),
             "fieldConfig": {"defaults": defaults, "overrides": []},
             "options": {"reduceOptions": {"calcs": ["lastNotNull"], "fields": "", "values": False},
-                        "colorMode": "background", "graphMode": "area", "textMode": "value"},
-            "targets": [{"datasource": PROM, "refId": "A", "expr": expr, "instant": False}],
+                        "colorMode": "background", "graphMode": "none" if instant else "area", "textMode": "value"},
+            "targets": [{"datasource": PROM, "refId": "A", "expr": expr, "instant": instant, "range": not instant}],
         })
 
     def ts(self, title, targets, unit="short", w=12, h=8, ds=PROM, desc="", stack=False):
@@ -90,6 +90,27 @@ def build(arch):
     def per(expr_inner, agg="sum"):
         return f"{agg} by ({by}) ({expr_inner})" if by else f"{agg}({expr_inner})"
 
+    # ------------------------------------------------------------ run summary
+    # One value per panel, computed over the whole selected time range: select the start and end
+    # of a JMeter run (or open the dashboard with &from=<start ms>&to=<end ms>) to read that run's results.
+    rng = "[$__range]"
+    count = f"sum(increase(http_server_requests_seconds_count{{{http}}}{rng}))"
+    lat = [{"color": "green", "value": None}, {"color": "orange", "value": 0.2}, {"color": "red", "value": 1}]
+    d.row("Run summary (whole selected time range)")
+    d.stat("Throughput (avg req/s)", f"{count} / $__range_s", "reqps", w=4, decimals=1, instant=True,
+           desc="Requests handled by the server divided by the length of the selected time range. Select exactly one test run.")
+    d.stat("Average response time", f"sum(increase(http_server_requests_seconds_sum{{{http}}}{rng})) / {count}", "s", w=4, instant=True,
+           thresholds=lat, desc="Mean server-side processing time over the selected range (does not include the network trip to JMeter)")
+    d.stat("p95 response time", f"histogram_quantile(0.95, sum by (le) (increase(http_server_requests_seconds_bucket{{{http}}}{rng})))", "s", w=4,
+           instant=True, thresholds=lat, desc="95 % of requests in the selected range were faster than this (server side)")
+    d.stat("p99 response time", f"histogram_quantile(0.99, sum by (le) (increase(http_server_requests_seconds_bucket{{{http}}}{rng})))", "s", w=4,
+           instant=True, thresholds=lat, desc="99 % of requests in the selected range were faster than this (server side)")
+    d.stat("Requests (total)", count, "short", w=4, decimals=0, instant=True, desc="Requests handled by the server in the selected range")
+    d.stat("Errors (5xx)", f'(sum(increase(http_server_requests_seconds_count{{{http}, status=~"5.."}}{rng})) or vector(0)) / {count}',
+           "percentunit", w=4, instant=True,
+           thresholds=[{"color": "green", "value": None}, {"color": "orange", "value": 0.01}, {"color": "red", "value": 0.05}],
+           desc="Server errors only: requests refused or timed out before reaching the application are counted by JMeter, not here")
+
     # ------------------------------------------------------------ overview
     d.row("Overview")
     if ms:
@@ -113,9 +134,13 @@ def build(arch):
     d.row("HTTP (REST API)")
     d.ts("Requests/s per endpoint",
          [q(f"sum by ({grp}method, uri) (rate(http_server_requests_seconds_count{{{http}}}[$__rate_interval]))", leg + "{{method}} {{uri}}")], "reqps")
-    d.ts("Latency percentiles (all endpoints)",
+    d.ts("Response time: average, p50, p95, p99 (all endpoints)",
+         [q(f"sum(rate(http_server_requests_seconds_sum{{{http}}}[$__rate_interval])) / sum(rate(http_server_requests_seconds_count{{{http}}}[$__rate_interval]))", "avg")] +
          [q(f"histogram_quantile({p}, sum by (le) (rate(http_server_requests_seconds_bucket{{{http}}}[$__rate_interval])))", f"p{int(p * 100)}")
           for p in (0.5, 0.95, 0.99)], "s")
+    d.ts("Average response time per endpoint",
+         [q(f"sum by ({grp}method, uri) (rate(http_server_requests_seconds_sum{{{http}}}[$__rate_interval])) / sum by ({grp}method, uri) (rate(http_server_requests_seconds_count{{{http}}}[$__rate_interval]))",
+            leg + "{{method}} {{uri}}")], "s")
     d.ts("p95 latency per endpoint",
          [q(f"histogram_quantile(0.95, sum by (le, {grp}method, uri) (rate(http_server_requests_seconds_bucket{{{http}}}[$__rate_interval])))", leg + "{{method}} {{uri}}")], "s")
     d.ts("Responses per status",
