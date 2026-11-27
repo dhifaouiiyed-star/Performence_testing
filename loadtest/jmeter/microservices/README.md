@@ -1,7 +1,8 @@
 # JMeter tests — microservices
 
 Three test plans for the microservices architecture (`user-service`, `product-service`, `order-service`), one file per test.
-They are the same tests as `../monolithic/`, with the same workload and default profiles, so the two architectures can be compared like for like.
+They use the same load profiles as `../monolithic/` (users, ramp, duration, timeouts), but a **product-heavy workload**: product-service gets most of the load, both directly and through order-service's gRPC calls (see *Workload* below).
+Because the request mix differs, compare the two architectures on the breaking point and resource use, not request by request.
 
 | File | Test | What it shows |
 |---|---|---|
@@ -35,18 +36,32 @@ Property names (`host`, `port`, `users`, `ramp`, `duration`, `think_time`, `run_
 
 ## Workload (same in all three tests)
 
-Before the test, a setUp step checks the server, then creates `seed_users` users (one per virtual user: 1500, or 1550 for the spike test) and `seed_products` products (default 50), using `seed_threads` (default 20) threads in parallel so seeding stays short over the long Tunisia → Sweden link. Seeding is not part of the 5 minutes.
+Before the test, a setUp step checks the servers, then creates `seed_users` users (one per virtual user: 1500, or 1550 for the spike test) and `seed_products` products (default 50), using `seed_threads` (default 20) threads in parallel so seeding stays short over the long Tunisia → Sweden link. Seeding is not part of the 5 minutes.
 Each virtual user always uses its own seeded user, so carts are never shared between threads.
 
 Each iteration is one of three scenarios, chosen deterministically so reruns send the same requests:
 
-| Scenario | Share (default) | Requests |
-|---|---|---|
-| Browse | 80 % (`browse_pct`) | `GET /api/v1/products`, `GET /api/v1/products/search?keyword=product` |
-| Product detail | 15 % (`detail_pct`) | `GET /api/v1/products/{id}`, `GET /api/v1/users/{id}` |
-| Order | the rest (5 %) | 2 × `POST /api/v1/carts`, `GET /api/v1/carts`, `POST /api/v1/orders` |
+| Scenario | Share (default) | Requests | Service |
+|---|---|---|---|
+| Browse | 65 % (`browse_pct`) | `GET /api/v1/products`, `GET /api/v1/products/search?keyword=product`, then `product_pages` (default 2) × `GET /api/v1/products/{id}` | product-service |
+| Product detail | 15 % (`detail_pct`) | `GET /api/v1/products/{id}`, `GET /api/v1/users/{id}` | product-service, user-service |
+| Order | the rest (20 %) | 2 × `POST /api/v1/carts`, `GET /api/v1/carts`, `POST /api/v1/orders` | order-service (which calls product- and user-service over gRPC) |
 
 After each iteration a user waits `think_time` milliseconds (default 100, kept short to put pressure on the server).
+
+### Load per service
+
+Every `POST /carts` makes order-service call product-service **and** user-service over gRPC; `GET /carts` and `POST /orders` call user-service.
+Per 100 iterations with the defaults:
+
+| Service | Direct REST calls | gRPC calls from order-service | Total | Share |
+|---|---|---|---|---|
+| **product-service** | 275 | 40 | **315** | **~64 %** |
+| user-service | 15 | 80 | 95 | ~19 % |
+| order-service | 80 | — | 80 | ~16 % |
+
+The gRPC path (order-service → product-service) is the one where Team 3's replica-distribution defect shows up; the 20 % order share gives it about 4× more traffic than the monolith mix.
+To tune the product focus: `-Jproduct_pages=<n>` changes the direct load, `-Jbrowse_pct` / `-Jdetail_pct` change the mix (order gets the rest; more orders also means more database writes).
 To run without writing orders (for example against production), use `-Jbrowse_pct=85 -Jdetail_pct=15`.
 
 ## Commands
@@ -91,7 +106,8 @@ Every value can be changed with `-J<name>=<value>`.
 | `think_time` | `100` | Pause after each iteration (ms) |
 | `response_timeout` | `10000` | A request with no answer after this many ms counts as failed |
 | `connect_timeout` | `5000` | A connection not accepted within this many ms counts as failed |
-| `browse_pct` / `detail_pct` | `80` / `15` | Scenario mix; order gets the rest |
+| `browse_pct` / `detail_pct` | `65` / `15` | Scenario mix; order gets the rest (20 %) |
+| `product_pages` | `2` | Extra product pages opened in each browse iteration (direct load on product-service) |
 | `seed_users` / `seed_products` | `1500` (spike: `1550`) / `50` | Data created by the setUp step; keep `seed_users` ≥ the maximum number of users |
 | `seed_threads` | `20` | Parallel threads used for seeding |
 

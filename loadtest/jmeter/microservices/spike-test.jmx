@@ -10,7 +10,7 @@
 </TestPlan>
 <hashTree><Arguments guiclass="ArgumentsPanel" testclass="Arguments" testname="Server and test settings (override with -J on the command line)">
 <stringProp name="TestPlan.comments">HOST is empty on purpose: pass -Jhost=&lt;server address&gt; on the command line (one address for the three services, or -Juser_host / -Jproduct_host / -Jorder_host), or type it here in the GUI.</stringProp>
-<collectionProp name="Arguments.arguments"><elementProp name="HOST" elementType="Argument"><stringProp name="Argument.name">HOST</stringProp><stringProp name="Argument.value">${__P(host,)}</stringProp><stringProp name="Argument.metadata">=</stringProp></elementProp><elementProp name="USER_HOST" elementType="Argument"><stringProp name="Argument.name">USER_HOST</stringProp><stringProp name="Argument.value">${__P(user_host,${HOST})}</stringProp><stringProp name="Argument.metadata">=</stringProp></elementProp><elementProp name="USER_PORT" elementType="Argument"><stringProp name="Argument.name">USER_PORT</stringProp><stringProp name="Argument.value">${__P(user_port,8081)}</stringProp><stringProp name="Argument.metadata">=</stringProp></elementProp><elementProp name="PRODUCT_HOST" elementType="Argument"><stringProp name="Argument.name">PRODUCT_HOST</stringProp><stringProp name="Argument.value">${__P(product_host,${HOST})}</stringProp><stringProp name="Argument.metadata">=</stringProp></elementProp><elementProp name="PRODUCT_PORT" elementType="Argument"><stringProp name="Argument.name">PRODUCT_PORT</stringProp><stringProp name="Argument.value">${__P(product_port,8082)}</stringProp><stringProp name="Argument.metadata">=</stringProp></elementProp><elementProp name="ORDER_HOST" elementType="Argument"><stringProp name="Argument.name">ORDER_HOST</stringProp><stringProp name="Argument.value">${__P(order_host,${HOST})}</stringProp><stringProp name="Argument.metadata">=</stringProp></elementProp><elementProp name="ORDER_PORT" elementType="Argument"><stringProp name="Argument.name">ORDER_PORT</stringProp><stringProp name="Argument.value">${__P(order_port,8083)}</stringProp><stringProp name="Argument.metadata">=</stringProp></elementProp><elementProp name="PROTOCOL" elementType="Argument"><stringProp name="Argument.name">PROTOCOL</stringProp><stringProp name="Argument.value">${__P(protocol,http)}</stringProp><stringProp name="Argument.metadata">=</stringProp></elementProp><elementProp name="SEED_USERS" elementType="Argument"><stringProp name="Argument.name">SEED_USERS</stringProp><stringProp name="Argument.value">${__P(seed_users,1550)}</stringProp><stringProp name="Argument.metadata">=</stringProp></elementProp><elementProp name="SEED_PRODUCTS" elementType="Argument"><stringProp name="Argument.name">SEED_PRODUCTS</stringProp><stringProp name="Argument.value">${__P(seed_products,50)}</stringProp><stringProp name="Argument.metadata">=</stringProp></elementProp><elementProp name="SEED_THREADS" elementType="Argument"><stringProp name="Argument.name">SEED_THREADS</stringProp><stringProp name="Argument.value">${__P(seed_threads,20)}</stringProp><stringProp name="Argument.metadata">=</stringProp></elementProp><elementProp name="THINK_MS" elementType="Argument"><stringProp name="Argument.name">THINK_MS</stringProp><stringProp name="Argument.value">${__P(think_time,100)}</stringProp><stringProp name="Argument.metadata">=</stringProp></elementProp><elementProp name="RUN_ID" elementType="Argument"><stringProp name="Argument.name">RUN_ID</stringProp><stringProp name="Argument.value">${__P(run_id,microservices-${__time(yyyyMMdd-HHmmss,)})}</stringProp><stringProp name="Argument.metadata">=</stringProp></elementProp><elementProp name="BROWSE_PCT" elementType="Argument"><stringProp name="Argument.name">BROWSE_PCT</stringProp><stringProp name="Argument.value">${__P(browse_pct,80)}</stringProp><stringProp name="Argument.metadata">=</stringProp></elementProp><elementProp name="DETAIL_PCT" elementType="Argument"><stringProp name="Argument.name">DETAIL_PCT</stringProp><stringProp name="Argument.value">${__P(detail_pct,15)}</stringProp><stringProp name="Argument.metadata">=</stringProp></elementProp><elementProp name="BASE_USERS" elementType="Argument"><stringProp name="Argument.name">BASE_USERS</stringProp><stringProp name="Argument.value">${__P(base_users,50)}</stringProp><stringProp name="Argument.metadata">=</stringProp></elementProp><elementProp name="DURATION" elementType="Argument"><stringProp name="Argument.name">DURATION</stringProp><stringProp name="Argument.value">${__P(duration,300)}</stringProp><stringProp name="Argument.metadata">=</stringProp></elementProp><elementProp name="SPIKE_USERS" elementType="Argument"><stringProp name="Argument.name">SPIKE_USERS</stringProp><stringProp name="Argument.value">${__P(spike_users,1500)}</stringProp><stringProp name="Argument.metadata">=</stringProp></elementProp><elementProp name="SPIKE_START" elementType="Argument"><stringProp name="Argument.name">SPIKE_START</stringProp><stringProp name="Argument.value">${__P(spike_start,60)}</stringProp><stringProp name="Argument.metadata">=</stringProp></elementProp><elementProp name="SPIKE_RAMP" elementType="Argument"><stringProp name="Argument.name">SPIKE_RAMP</stringProp><stringProp name="Argument.value">${__P(spike_ramp,10)}</stringProp><stringProp name="Argument.metadata">=</stringProp></elementProp><elementProp name="SPIKE_HOLD" elementType="Argument"><stringProp name="Argument.name">SPIKE_HOLD</stringProp><stringProp name="Argument.value">${__P(spike_hold,120)}</stringProp><stringProp name="Argument.metadata">=</stringProp></elementProp></collectionProp>
+<collectionProp name="Arguments.arguments"><elementProp name="HOST" elementType="Argument"><stringProp name="Argument.name">HOST</stringProp><stringProp name="Argument.value">${__P(host,)}</stringProp><stringProp name="Argument.metadata">=</stringProp></elementProp><elementProp name="USER_HOST" elementType="Argument"><stringProp name="Argument.name">USER_HOST</stringProp><stringProp name="Argument.value">${__P(user_host,${HOST})}</stringProp><stringProp name="Argument.metadata">=</stringProp></elementProp><elementProp name="USER_PORT" elementType="Argument"><stringProp name="Argument.name">USER_PORT</stringProp><stringProp name="Argument.value">${__P(user_port,8081)}</stringProp><stringProp name="Argument.metadata">=</stringProp></elementProp><elementProp name="PRODUCT_HOST" elementType="Argument"><stringProp name="Argument.name">PRODUCT_HOST</stringProp><stringProp name="Argument.value">${__P(product_host,${HOST})}</stringProp><stringProp name="Argument.metadata">=</stringProp></elementProp><elementProp name="PRODUCT_PORT" elementType="Argument"><stringProp name="Argument.name">PRODUCT_PORT</stringProp><stringProp name="Argument.value">${__P(product_port,8082)}</stringProp><stringProp name="Argument.metadata">=</stringProp></elementProp><elementProp name="ORDER_HOST" elementType="Argument"><stringProp name="Argument.name">ORDER_HOST</stringProp><stringProp name="Argument.value">${__P(order_host,${HOST})}</stringProp><stringProp name="Argument.metadata">=</stringProp></elementProp><elementProp name="ORDER_PORT" elementType="Argument"><stringProp name="Argument.name">ORDER_PORT</stringProp><stringProp name="Argument.value">${__P(order_port,8083)}</stringProp><stringProp name="Argument.metadata">=</stringProp></elementProp><elementProp name="PROTOCOL" elementType="Argument"><stringProp name="Argument.name">PROTOCOL</stringProp><stringProp name="Argument.value">${__P(protocol,http)}</stringProp><stringProp name="Argument.metadata">=</stringProp></elementProp><elementProp name="SEED_USERS" elementType="Argument"><stringProp name="Argument.name">SEED_USERS</stringProp><stringProp name="Argument.value">${__P(seed_users,1550)}</stringProp><stringProp name="Argument.metadata">=</stringProp></elementProp><elementProp name="SEED_PRODUCTS" elementType="Argument"><stringProp name="Argument.name">SEED_PRODUCTS</stringProp><stringProp name="Argument.value">${__P(seed_products,50)}</stringProp><stringProp name="Argument.metadata">=</stringProp></elementProp><elementProp name="SEED_THREADS" elementType="Argument"><stringProp name="Argument.name">SEED_THREADS</stringProp><stringProp name="Argument.value">${__P(seed_threads,20)}</stringProp><stringProp name="Argument.metadata">=</stringProp></elementProp><elementProp name="THINK_MS" elementType="Argument"><stringProp name="Argument.name">THINK_MS</stringProp><stringProp name="Argument.value">${__P(think_time,100)}</stringProp><stringProp name="Argument.metadata">=</stringProp></elementProp><elementProp name="RUN_ID" elementType="Argument"><stringProp name="Argument.name">RUN_ID</stringProp><stringProp name="Argument.value">${__P(run_id,microservices-${__time(yyyyMMdd-HHmmss,)})}</stringProp><stringProp name="Argument.metadata">=</stringProp></elementProp><elementProp name="BROWSE_PCT" elementType="Argument"><stringProp name="Argument.name">BROWSE_PCT</stringProp><stringProp name="Argument.value">${__P(browse_pct,65)}</stringProp><stringProp name="Argument.metadata">=</stringProp></elementProp><elementProp name="DETAIL_PCT" elementType="Argument"><stringProp name="Argument.name">DETAIL_PCT</stringProp><stringProp name="Argument.value">${__P(detail_pct,15)}</stringProp><stringProp name="Argument.metadata">=</stringProp></elementProp><elementProp name="PRODUCT_PAGES" elementType="Argument"><stringProp name="Argument.name">PRODUCT_PAGES</stringProp><stringProp name="Argument.value">${__P(product_pages,2)}</stringProp><stringProp name="Argument.metadata">=</stringProp></elementProp><elementProp name="BASE_USERS" elementType="Argument"><stringProp name="Argument.name">BASE_USERS</stringProp><stringProp name="Argument.value">${__P(base_users,50)}</stringProp><stringProp name="Argument.metadata">=</stringProp></elementProp><elementProp name="DURATION" elementType="Argument"><stringProp name="Argument.name">DURATION</stringProp><stringProp name="Argument.value">${__P(duration,300)}</stringProp><stringProp name="Argument.metadata">=</stringProp></elementProp><elementProp name="SPIKE_USERS" elementType="Argument"><stringProp name="Argument.name">SPIKE_USERS</stringProp><stringProp name="Argument.value">${__P(spike_users,1500)}</stringProp><stringProp name="Argument.metadata">=</stringProp></elementProp><elementProp name="SPIKE_START" elementType="Argument"><stringProp name="Argument.name">SPIKE_START</stringProp><stringProp name="Argument.value">${__P(spike_start,60)}</stringProp><stringProp name="Argument.metadata">=</stringProp></elementProp><elementProp name="SPIKE_RAMP" elementType="Argument"><stringProp name="Argument.name">SPIKE_RAMP</stringProp><stringProp name="Argument.value">${__P(spike_ramp,10)}</stringProp><stringProp name="Argument.metadata">=</stringProp></elementProp><elementProp name="SPIKE_HOLD" elementType="Argument"><stringProp name="Argument.name">SPIKE_HOLD</stringProp><stringProp name="Argument.value">${__P(spike_hold,120)}</stringProp><stringProp name="Argument.metadata">=</stringProp></elementProp></collectionProp>
 </Arguments>
 <hashTree></hashTree>
 <ConfigTestElement guiclass="HttpDefaultsGui" testclass="ConfigTestElement" testname="HTTP Request Defaults (server)">
@@ -302,6 +302,44 @@ vars.put('scenario', r &lt;= browse ? 'browse' : (r &lt;= browse + detail ? 'det
 </ResponseAssertion>
 <hashTree></hashTree>
 </hashTree>
+<LoopController guiclass="LoopControlPanel" testclass="LoopController" testname="Open PRODUCT_PAGES product pages (extra load on product-service)">
+<boolProp name="LoopController.continue_forever">true</boolProp>
+<stringProp name="LoopController.loops">${PRODUCT_PAGES}</stringProp>
+</LoopController>
+<hashTree><HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="GET /products/{id} (browse)">
+<stringProp name="HTTPSampler.domain">${PRODUCT_HOST}</stringProp>
+<stringProp name="HTTPSampler.port">${PRODUCT_PORT}</stringProp>
+<stringProp name="HTTPSampler.path">/api/v1/products/${pageProductId}</stringProp>
+<stringProp name="HTTPSampler.method">GET</stringProp>
+<boolProp name="HTTPSampler.follow_redirects">true</boolProp>
+<boolProp name="HTTPSampler.use_keepalive">true</boolProp>
+<elementProp name="HTTPsampler.Arguments" elementType="Arguments" guiclass="HTTPArgumentsPanel" testclass="Arguments" testname="User Defined Variables"><collectionProp name="Arguments.arguments"/></elementProp>
+</HTTPSamplerProxy>
+<hashTree><ResponseAssertion guiclass="AssertionGui" testclass="ResponseAssertion" testname="HTTP 200">
+<collectionProp name="Asserion.test_strings"><stringProp name="0">200</stringProp></collectionProp>
+<stringProp name="Assertion.custom_message">expected HTTP 200</stringProp>
+<stringProp name="Assertion.test_field">Assertion.response_code</stringProp>
+<boolProp name="Assertion.assume_success">false</boolProp>
+<intProp name="Assertion.test_type">8</intProp>
+</ResponseAssertion>
+<hashTree></hashTree>
+<JSR223PreProcessor guiclass="TestBeanGUI" testclass="JSR223PreProcessor" testname="Pick the next product page">
+<stringProp name="scriptLanguage">groovy</stringProp>
+<stringProp name="parameters"></stringProp>
+<stringProp name="filename"></stringProp>
+<stringProp name="cacheKey">true</stringProp>
+<stringProp name="script">// A different product for every page a user opens; deterministic, so reruns send the same requests.
+def products = props.get('seed.productIds')
+long n = products.size()
+long k = Long.parseLong(vars.get('pageCounter') ?: '0') + 1
+vars.put('pageCounter', k.toString())
+long t = Long.parseLong(vars.get('globalThread'))
+vars.put('pageProductId', products[(int) (((t * 7919L + k * 104729L + 13L) % n + n) % n)])
+</stringProp>
+</JSR223PreProcessor>
+<hashTree></hashTree>
+</hashTree>
+</hashTree>
 </hashTree>
 <IfController guiclass="IfControllerPanel" testclass="IfController" testname="Product detail (DETAIL_PCT % of iterations)">
 <stringProp name="IfController.condition">${__jexl3("${scenario}" == "detail")}</stringProp>
@@ -527,6 +565,44 @@ vars.put('scenario', r &lt;= browse ? 'browse' : (r &lt;= browse + detail ? 'det
 <intProp name="Assertion.test_type">8</intProp>
 </ResponseAssertion>
 <hashTree></hashTree>
+</hashTree>
+<LoopController guiclass="LoopControlPanel" testclass="LoopController" testname="Open PRODUCT_PAGES product pages (extra load on product-service)">
+<boolProp name="LoopController.continue_forever">true</boolProp>
+<stringProp name="LoopController.loops">${PRODUCT_PAGES}</stringProp>
+</LoopController>
+<hashTree><HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="GET /products/{id} (browse)">
+<stringProp name="HTTPSampler.domain">${PRODUCT_HOST}</stringProp>
+<stringProp name="HTTPSampler.port">${PRODUCT_PORT}</stringProp>
+<stringProp name="HTTPSampler.path">/api/v1/products/${pageProductId}</stringProp>
+<stringProp name="HTTPSampler.method">GET</stringProp>
+<boolProp name="HTTPSampler.follow_redirects">true</boolProp>
+<boolProp name="HTTPSampler.use_keepalive">true</boolProp>
+<elementProp name="HTTPsampler.Arguments" elementType="Arguments" guiclass="HTTPArgumentsPanel" testclass="Arguments" testname="User Defined Variables"><collectionProp name="Arguments.arguments"/></elementProp>
+</HTTPSamplerProxy>
+<hashTree><ResponseAssertion guiclass="AssertionGui" testclass="ResponseAssertion" testname="HTTP 200">
+<collectionProp name="Asserion.test_strings"><stringProp name="0">200</stringProp></collectionProp>
+<stringProp name="Assertion.custom_message">expected HTTP 200</stringProp>
+<stringProp name="Assertion.test_field">Assertion.response_code</stringProp>
+<boolProp name="Assertion.assume_success">false</boolProp>
+<intProp name="Assertion.test_type">8</intProp>
+</ResponseAssertion>
+<hashTree></hashTree>
+<JSR223PreProcessor guiclass="TestBeanGUI" testclass="JSR223PreProcessor" testname="Pick the next product page">
+<stringProp name="scriptLanguage">groovy</stringProp>
+<stringProp name="parameters"></stringProp>
+<stringProp name="filename"></stringProp>
+<stringProp name="cacheKey">true</stringProp>
+<stringProp name="script">// A different product for every page a user opens; deterministic, so reruns send the same requests.
+def products = props.get('seed.productIds')
+long n = products.size()
+long k = Long.parseLong(vars.get('pageCounter') ?: '0') + 1
+vars.put('pageCounter', k.toString())
+long t = Long.parseLong(vars.get('globalThread'))
+vars.put('pageProductId', products[(int) (((t * 7919L + k * 104729L + 13L) % n + n) % n)])
+</stringProp>
+</JSR223PreProcessor>
+<hashTree></hashTree>
+</hashTree>
 </hashTree>
 </hashTree>
 <IfController guiclass="IfControllerPanel" testclass="IfController" testname="Product detail (DETAIL_PCT % of iterations)">
